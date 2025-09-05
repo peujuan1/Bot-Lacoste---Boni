@@ -6,16 +6,20 @@ from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 
 # Carregar variáveis do .env
-import os
-from dotenv import load_dotenv
-
 load_dotenv()
+print("DEBUG -> Conteúdo da variável DISCORD_TOKEN:", os.getenv("DISCORD_TOKEN"))
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not TOKEN:
     raise ValueError("❌ ERRO: DISCORD_TOKEN não encontrado no .env")
+if not DATABASE_URL:
+    raise ValueError("❌ ERRO: DATABASE_URL não encontrado no .env")
+
+# Função de conexão com PostgreSQL
+def get_db_connection():
+    return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 
 # Criar tabelas
 def init_db():
@@ -34,6 +38,7 @@ def init_db():
     conn.close()
 
 init_db()
+
 
 # Configuração do bot
 intents = discord.Intents.default()
